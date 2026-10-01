@@ -5,7 +5,7 @@ import './style.css';
 type Recommendation={type:'doctor'|'hospital',id:number,name:string,specialty?:string|null,hospital?:string|null,city?:string|null,source:'database'};
 type Msg={role:'user'|'assistant',content:string,action?:string,recommendations?:Recommendation[]};
 type Result={message:string,action:string,recommendations:Recommendation[],tool_calls:string[]};
-const API='http://localhost:8000';
+const API=import.meta.env.VITE_API_BASE_URL||'http://localhost:8000';
 const welcome={en:'Hi. I can help you think through the next healthcare step. I do not diagnose conditions.',ar:'مرحبًا. أستطيع مساعدتك في التفكير في الخطوة الصحية التالية، لكنني لا أُشخّص الحالات.'};
 
 function App(){

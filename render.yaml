@@ -1,0 +1,41 @@
+services:
+  - type: web
+    runtime: docker
+    name: healtrip-backend
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: healtrip-db
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5.5
+      - key: CORS_ORIGIN
+        fromService:
+          type: web
+          name: healtrip-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: web
+    runtime: static
+    name: healtrip-frontend
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: healtrip-backend
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  - name: healtrip-db
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: "17"

@@ -132,6 +132,14 @@ Compose reads `OPENAI_API_KEY` and `OPENAI_MODEL` from the shell or project-root
 
 Without an API key the UI still runs; the backend returns a simple fallback and the deterministic emergency phrase guard remains active.
 
+## Deploy a Render demo
+
+The root `render.yaml` defines three services: a static React/Vite frontend, the FastAPI Docker web service, and PostgreSQL. The frontend calls the backend over HTTPS using `VITE_API_BASE_URL`; Render supplies the backend's public URL through a Blueprint service reference. The backend receives its PostgreSQL connection string from the Render database and calls SovereignEG directly. `CORS_ORIGIN` is wired to the frontend's Render URL through a service reference.
+
+Create the Blueprint from this repository and provide `OPENAI_API_KEY` when Render prompts for it (or set it in the backend service's environment settings). `OPENAI_MODEL` defaults to `gpt-5.5`. Keep the provider key on the backend; no secret belongs in a `VITE_*` variable. Local development remains unchanged: without `VITE_API_BASE_URL`, the browser uses `http://localhost:8000`, while Compose continues to allow `http://localhost:5173` for CORS.
+
+This Free deployment is for evaluation and prototype demonstrations, not production or real patient data. Render Free web services spin down after 15 minutes without traffic, so the first request after idle can take about a minute to start. Free PostgreSQL is limited to 1 GB and expires 30 days after creation; arrange any needed export before expiry. Free services can also restart, and the web service filesystem is ephemeral. See [Render's Free instance limits](https://render.com/docs/free).
+
 ## Tests and production build
 
 Run these commands from the project root. The backend runtime image copies `backend/app` but does not include `backend/tests`, so the test command mounts the backend source read-only into a temporary container:
