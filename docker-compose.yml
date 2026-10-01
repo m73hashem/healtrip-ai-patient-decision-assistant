@@ -4,13 +4,13 @@ services:
     environment:
       POSTGRES_DB: healtrip
       POSTGRES_USER: healtrip
-      POSTGRES_PASSWORD: healtrip
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the project-root .env}
     ports: ["5432:5432"]
     volumes: ["pgdata:/var/lib/postgresql/data"]
   backend:
     build: ./backend
     environment:
-      DATABASE_URL: postgresql+psycopg://healtrip:healtrip@db:5432/healtrip
+      DATABASE_URL: postgresql+psycopg://healtrip:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the project-root .env}@db:5432/healtrip
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.5}
       CORS_ORIGIN: http://localhost:5173

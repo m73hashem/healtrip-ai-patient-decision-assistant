@@ -9,6 +9,8 @@ A small full-stack prototype focused on engineering decisions rather than visual
 - AI: SovereignEG OpenAI-compatible Chat Completions API with function tools
 - Local orchestration: Docker Compose
 
+The UI supports English and Arabic, with left-to-right layout for English and right-to-left layout for Arabic.
+
 The backend uses the OpenAI Python client configured with SovereignEG's `https://backend.sovereigneg.com/v1` endpoint. Chat Completions provides function tool calls; the model requests tools, while the backend validates arguments and owns tool execution.
 
 ## Architecture
@@ -123,12 +125,12 @@ Allowed actions are `ER`, `URGENT_CARE`, `SPECIALIST`, `SECOND_OPINION`, `SELF_C
 
 ## Run locally
 
-1. Copy the project-root `.env.example` to project-root `.env`, then set `OPENAI_API_KEY` to your SovereignEG API key. `OPENAI_MODEL` defaults to `gpt-5.5` and can be changed in the same file. Alternatively, export these variables in your shell before starting Compose.
+1. Copy the project-root `.env.example` to project-root `.env`, then set `OPENAI_API_KEY` to your SovereignEG API key and replace `POSTGRES_PASSWORD` with a local PostgreSQL password using letters, numbers, and hyphens. `OPENAI_MODEL` defaults to `gpt-5.5` and can be changed in the same file. Alternatively, export these variables in your shell before starting Compose.
 2. Run `docker compose up --build`.
 3. Open `http://localhost:5173`.
 4. Backend health: `http://localhost:8000/health`.
 
-Compose reads `OPENAI_API_KEY` and `OPENAI_MODEL` from the shell or project-root `.env`. It supplies the database URL and frontend CORS origin in `docker-compose.yml`.
+Compose reads `OPENAI_API_KEY`, `OPENAI_MODEL`, and `POSTGRES_PASSWORD` from the shell or project-root `.env`. It builds `DATABASE_URL` from the same PostgreSQL credentials and supplies the frontend CORS origin in `docker-compose.yml`.
 
 Without an API key the UI still runs; the backend returns a simple fallback and the deterministic emergency phrase guard remains active.
 
